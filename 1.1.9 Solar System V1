@@ -1,0 +1,149 @@
+# Create turtle named star to be used for drawing
+import turtle as trtl
+star = trtl.Turtle()
+
+# Import random function
+import random
+
+# Hide drawing turtle (star)
+star.hideturtle()
+
+# Background variables
+tot_width = 600
+tot_height = 600
+
+# Big star variables
+star_rad = ((tot_width+tot_height)/2)/30
+
+# Earth variables
+ear_orbit =((tot_width+tot_height)/2)/6
+ear_speed = 2
+
+# Mars variables
+mar_orbit =((tot_width+tot_height)/2)/3
+mar_speed = 1
+
+# Little star variables
+lstar_size = 0.25
+lstar_count = 50
+
+# Rocket variables
+trail_size = 2
+trail_color = "blue"
+roc_color = "blue"
+
+# Draw black background
+star.speed(0)
+star.penup()
+star.goto(-(tot_width/2),(tot_height/2))
+star.pendown()
+star.begin_fill()
+star.forward(tot_width)
+star.right(90)
+star.forward(tot_height)
+star.right(90)
+star.forward(tot_width)
+star.right(90)
+star.forward(tot_height)
+star.right(90)
+star.end_fill()
+
+# Draw little stars
+star.penup()
+for num in range(lstar_count):
+  star.speed(0)
+  star.shape("square")
+  star.goto(random.randint(-(tot_width/2), tot_width/2),random.randint(-(tot_height/2), tot_height/2))
+  star.color("white")
+  star.shapesize(lstar_size)
+  star.stamp()
+  star.right(45)
+  star.stamp()
+
+# Set regular turtle settings
+star.setheading(0)
+star.speed(0)
+star.shape("classic")
+star.shapesize(1)
+
+# Repostion turtle to draw the big star
+star.penup()
+star.goto(0,-star_rad)
+star.pendown()
+
+# Draw the big star
+star.pencolor("orange")
+star.fillcolor("orange")
+star.begin_fill()
+star.circle(star_rad)
+star.end_fill()
+
+# Make earth turtle
+ear = trtl.Turtle()
+ear.shape("circle")
+ear.color("green")
+
+# Set earth guide turtle in orbit position
+ear.speed(0)
+ear.penup()
+ear.goto(0,-ear_orbit)
+
+# Make mars turtle
+mar = trtl.Turtle()
+mar.shape("circle")
+mar.color("red")
+
+# Set mars guide turtle in orbit position
+mar.speed(0)
+mar.penup()
+mar.setheading(90)
+mar.goto(mar_orbit,0)
+
+# Make rocket
+roc = trtl.Turtle()
+roc.shape("classic")
+roc.color(roc_color)
+
+# Move rocket to earth position
+roc.speed(0)
+roc.penup()
+roc.goto(ear.xcor(),ear.ycor())
+
+count = int (input("How many seconds until launch? "))
+
+landed = 0
+pt = 0
+while (True):
+  ear.circle(ear_orbit,ear_speed)
+  mar.circle(mar_orbit,mar_speed)
+
+  if (count >= 0):
+    roc.circle(ear_orbit,ear_speed)
+  else:
+    if (abs(roc.xcor()-mar.xcor()) < 15 and abs(roc.ycor()-mar.ycor()) < 15):
+      roc.goto(mar.xcor(),mar.ycor())
+      roc.setheading(mar.heading())
+      landed = 1
+      if pt == 0:
+        print ("You landed on Mars!")
+        pt = 1
+
+
+    else:
+      roc.forward(tot_width/150)
+      roc.left(tot_width/400)
+      roc.pensize(trail_size)
+      roc.pencolor(trail_color)
+      roc.pendown()
+    
+  if landed == 0:  
+    if(count >= 0):
+      print("T - " + str(count))
+    else:
+      print("T + " + str(abs(count)))
+
+    count -= 0.10
+
+# Make screen persist
+wn = trtl.Screen()
+wn.mainloop()
